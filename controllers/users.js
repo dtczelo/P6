@@ -5,7 +5,6 @@ const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
 
 exports.signup = (req, res, next) => {
-    console.log(req.body)
     bcrypt.hash(req.body.password, 10)
     .then((hash) => {
         const user = new User({
@@ -22,6 +21,7 @@ exports.signup = (req, res, next) => {
 };
 
 exports.login = (req, res, next) => {
+    console.log(req.body)
     User.findOne({ email: req.body.email})
     .then(user => {
         if (!user) {
@@ -34,7 +34,11 @@ exports.login = (req, res, next) => {
             }
             res.status(200).json({ 
                 userId: user._id,
-                token: 'TOKEN'
+                token: jwt.sign(
+                  { userId: user._id },
+                  'RANDOM_TOKEN_SECRET',
+                  { expiresIn: '24h' }
+                )
             });
         })
         .catch(error => res.staus(500).json({ error }));
