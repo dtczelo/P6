@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const saucesRoutes = require('./routes/sauces');
 const usersRoutes = require('./routes/users');
+const path = require('path');
 const app = express();
 
 mongoose.connect('mongodb+srv://Pekocko:Pekocko2020@p6.auttg.mongodb.net/<dbname>?retryWrites=true&w=majority',
@@ -19,6 +20,8 @@ app.use((req, res, next) => {
   });
 
 app.use(bodyParser.json());
+
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 app.use('/', saucesRoutes);
 app.use('/', usersRoutes);

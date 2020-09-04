@@ -21,16 +21,15 @@ exports.signup = (req, res, next) => {
 };
 
 exports.login = (req, res, next) => {
-    console.log(req.body)
     User.findOne({ email: req.body.email})
     .then(user => {
         if (!user) {
-            return res.status(404).json({ error: 'Utilisateur non trouvé !' });
+            return res.status(404).json({ error });
         }
         bcrypt.compare(req.body.password, user.password)
         .then(valid => {
             if (!valid) {
-                return res.status(401).json({ error: 'Mot de passe incorrect !' })
+                return res.status(401).json({ error })
             }
             res.status(200).json({ 
                 userId: user._id,
