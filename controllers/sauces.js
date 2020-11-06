@@ -84,7 +84,7 @@ exports.likeSauce = (req, res, next) => {
                 if (sauce.usersLiked.find((id) => id == req.body.userId) != undefined) {
                     sauce.usersLiked = removeElement(sauce.usersLiked, req.body.userId);
                     if (sauce.usersLiked === undefined) {
-                        sauce.usersLiked = []
+                        sauce.usersLiked = [];
                     }
                     Sauce.updateOne(
                         {
@@ -109,11 +109,11 @@ exports.likeSauce = (req, res, next) => {
                 }
                 if (sauce.usersDisliked.find((id) => id == req.body.userId) != undefined) {
                     sauce.usersDisliked = removeElement(sauce.usersDisliked, req.body.userId);
-                    console.log(sauce.usersDisliked)
+                    console.log(sauce.usersDisliked);
                     if (sauce.usersDisliked === undefined) {
-                        sauce.usersDisliked = []
+                        sauce.usersDisliked = [];
                     }
-                    console.log(sauce.usersDisliked)
+                    console.log(sauce.usersDisliked);
                     Sauce.updateOne(
                         {
                             _id: req.params.id,
@@ -136,7 +136,6 @@ exports.likeSauce = (req, res, next) => {
                         );
                 }
             }
-            console.log(sauce);
         })
         .catch((error) => res.status(500).json({ error }));
 };
@@ -158,7 +157,6 @@ exports.modifySauce = (req, res, next) => {
 };
 
 exports.deleteSauce = (req, res, next) => {
-    console.log(req.params.id);
     Sauce.deleteOne({
         _id: req.params.id,
     })
