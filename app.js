@@ -24,7 +24,7 @@ app.use(bodyParser.json());
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
-app.use('/', saucesRoutes);
-app.use('/', usersRoutes);
+app.use('/api/sauces', saucesRoutes);
+app.use('/api/auth', usersRoutes);
 
 module.exports = app;

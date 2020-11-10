@@ -109,11 +109,9 @@ exports.likeSauce = (req, res, next) => {
                 }
                 if (sauce.usersDisliked.find((id) => id == req.body.userId) != undefined) {
                     sauce.usersDisliked = removeElement(sauce.usersDisliked, req.body.userId);
-                    console.log(sauce.usersDisliked);
                     if (sauce.usersDisliked === undefined) {
                         sauce.usersDisliked = [];
                     }
-                    console.log(sauce.usersDisliked);
                     Sauce.updateOne(
                         {
                             _id: req.params.id,
