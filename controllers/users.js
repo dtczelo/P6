@@ -1,5 +1,5 @@
 const express = require("express");
-
+const mongoMask = require("mongo-mask");
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -20,11 +20,14 @@ exports.signup = (req, res, next) => {
 };
 
 exports.login = (req, res, next) => {
-    User.findOne({ email: req.body.email })
+    // console.log(req)
+    const emailMask = mongoMask([], { id: "_id" });
+    User.findOne({ email: req.body.email }, ["password"])
         .then((user) => {
             if (!user) {
                 return res.status(401).json({ message: "Utilisateur non trouvé" });
             }
+            console.log(user)
             bcrypt
                 .compare(req.body.password, user.password)
                 .then((valid) => {
