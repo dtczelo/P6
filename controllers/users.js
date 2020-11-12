@@ -1,33 +1,38 @@
 const express = require("express");
-const mongoMask = require("mongo-mask");
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const passwordPolicy = require("password-policy");
 
 exports.signup = (req, res, next) => {
-    bcrypt
-        .hash(req.body.password, 10)
-        .then((hash) => {
-            const user = new User({
-                email: req.body.email,
-                password: hash,
-            });
-            user.save()
-                .then(() => res.status(201).json({ message: "Utilisateur ajoutée !" }))
-                .catch((error) => res.status(400).json({ error }));
-        })
-        .catch((error) => res.status(500).json({ error }));
+    if (
+        passwordPolicy.hasUpperCase(req.body.password, (times = 1)) &&
+        passwordPolicy.hasNumber(req.body.password, (times = 1)) &&
+        passwordPolicy.hasSpecialCharacter(req.body.password, (times = 1))
+    ) {
+        bcrypt
+            .hash(req.body.password, 10)
+            .then((hash) => {
+                const user = new User({
+                    email: req.body.email,
+                    password: hash,
+                });
+                user.save()
+                    .then(() => res.status(201).json({ message: "Utilisateur ajoutée !" }))
+                    .catch((error) => res.status(400).json({ error }));
+            })
+            .catch((error) => res.status(500).json({ error }));
+    } else {
+        res.status(401).json({ message: "Le mot de passe doit contenir au moins une majuscule, un chiffre et un caractère spéciale !" });
+    }
 };
 
 exports.login = (req, res, next) => {
-    // console.log(req)
-    const emailMask = mongoMask([], { id: "_id" });
     User.findOne({ email: req.body.email }, ["password"])
         .then((user) => {
             if (!user) {
                 return res.status(401).json({ message: "Utilisateur non trouvé" });
             }
-            console.log(user)
             bcrypt
                 .compare(req.body.password, user.password)
                 .then((valid) => {
